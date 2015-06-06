@@ -1,7 +1,5 @@
 package com.philips.lighting.hue;
 
-import android.util.Log;
-
 import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
@@ -12,6 +10,8 @@ import com.philips.lighting.model.PHLightState;
 
 import java.util.List;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * @author Oleg Soroka
@@ -61,29 +61,34 @@ public class SimpleHueController implements SimpleHueApi {
 
         @Override
         public void onSuccess() {
+            Timber.d("onSuccess");
         }
 
         @Override
         public void onStateUpdate(Map<String, String> arg0, List<PHHueError> arg1) {
-            Log.w(LOG_TAG, "Light has updated");
+            Timber.d("Light has updated");
         }
 
         @Override
         public void onError(int arg0, String arg1) {
-            Log.w(LOG_TAG, "onError");
+            Timber.e("onError");
         }
 
         @Override
         public void onReceivingLightDetails(PHLight arg0) {
+            Timber.d("onReceivingLightDetails: " + arg0);
         }
 
         @Override
         public void onReceivingLights(List<PHBridgeResource> arg0) {
+            Timber.d("onReceivingLights: " + arg0);
         }
 
         @Override
         public void onSearchComplete() {
+            Timber.d("onSearchComplete");
         }
+
     };
 
     @Override
