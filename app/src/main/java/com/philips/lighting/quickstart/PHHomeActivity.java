@@ -11,13 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.ToggleButton;
 
 import com.philips.lighting.data.AccessPointListAdapter;
 import com.philips.lighting.data.HueSharedPreferences;
-import com.philips.lighting.hue.SimpleHueController;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
@@ -150,7 +147,9 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
             prefs.setLastConnectedIPAddress(b.getResourceCache().getBridgeConfiguration().getIpAddress());
             prefs.setUsername(prefs.getUsername());
             PHWizardAlertDialog.getInstance().closeProgressDialog();
-//            startMainActivity();
+
+
+            startMainActivity();
         }
 
         @Override
@@ -158,7 +157,6 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
             Log.w(TAG, "Authentication Required.");
             phHueSDK.startPushlinkAuthentication(accessPoint);
             startActivity(new Intent(PHHomeActivity.this, PHPushlinkActivity.class));
-
         }
 
         @Override
@@ -166,7 +164,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
             if (PHHomeActivity.this.isFinishing())
                 return;
 
-            Log.v(TAG, "onConnectionResumed" + bridge.getResourceCache().getBridgeConfiguration().getIpAddress());
+            Log.v(TAG, "onConnectionResumed " + bridge.getResourceCache().getBridgeConfiguration().getIpAddress());
             phHueSDK.getLastHeartbeat().put(bridge.getResourceCache().getBridgeConfiguration().getIpAddress(), System.currentTimeMillis());
             for (int i = 0; i < phHueSDK.getDisconnectedAccessPoint().size(); i++) {
 

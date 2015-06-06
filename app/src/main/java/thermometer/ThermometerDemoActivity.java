@@ -175,7 +175,7 @@ public class ThermometerDemoActivity extends Activity {
                         if (transmitters.isEmpty())
                             return Observable.from(new ArrayList<List<TransmitterDevice>>());
                         return RelayrSdk.getRelayrApi().getTransmitterDevices(transmitters.get(0)
-                                .id);
+                                                                                      .id);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -246,13 +246,11 @@ public class ThermometerDemoActivity extends Activity {
 
                     @Override
                     public void onNext(Reading reading) {
+                        System.out.println("!! onNext");
                         if (reading.meaning.equals("luminosity")) {
                             mTemperatureValueTextView.setText(reading.value.toString());
-
-
                             double readingValue = (Double) reading.value;
                             int luminosity = processLuminosity(readingValue);
-
                             simpleHueController.manageBrightness(luminosity);
                         }
                     }
@@ -261,7 +259,8 @@ public class ThermometerDemoActivity extends Activity {
 
     int processLuminosity(double readingValue) {
         System.out.println("Luminosity value=" + readingValue);
-        int percent = (int) (readingValue / 2000 * 100);
+        int x = 4096;
+        int percent = (int) (readingValue / x * 100);
         System.out.println("Luminosity percentage=" + percent);
         return percent;
     }

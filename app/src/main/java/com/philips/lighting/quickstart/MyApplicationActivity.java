@@ -1,16 +1,13 @@
 package com.philips.lighting.quickstart;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 
-import com.philips.lighting.hue.SimpleHueController;
-
-import java.util.Random;
+import thermometer.ThermometerDemoActivity;
 
 public class MyApplicationActivity extends Activity {
 
@@ -32,7 +29,8 @@ public class MyApplicationActivity extends Activity {
     }
 
     public void randomLights() {
-        Random rand = new Random();
+        Intent intent = new Intent(getApplicationContext(), ThermometerDemoActivity.class);
+        startActivity(intent);
     }
 
     @Override
