@@ -31,6 +31,18 @@ public class SimpleHueController implements SimpleHueApi {
         phHueSDK = PHHueSDK.create();
     }
 
+    public void destroy() {
+        PHBridge bridge = phHueSDK.getSelectedBridge();
+        if (bridge == null) {
+            return;
+        }
+        if (phHueSDK.isHeartbeatEnabled(bridge)) {
+            phHueSDK.disableHeartbeat(bridge);
+        }
+
+        phHueSDK.disconnect(bridge);
+    }
+
     private void processBrightness(int val) {
         PHBridge bridge = phHueSDK.getSelectedBridge();
         List<PHLight> allLights = bridge.getResourceCache().getAllLights();
