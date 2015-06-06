@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import com.philips.lighting.hue.SimpleHueController;
 
@@ -27,6 +29,12 @@ public class MyApplicationActivity extends Activity {
             @Override
             public void onClick(View v) {
                 randomLights();
+            }
+        });
+        ((ToggleButton) findViewById(R.id.switchOn)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                simpleHueController.manageBrightness(!isChecked ? SimpleHueController.MY_MAX_BRIGHTNESS : SimpleHueController.MY_MIN_BRIGHTNESS);
             }
         });
 

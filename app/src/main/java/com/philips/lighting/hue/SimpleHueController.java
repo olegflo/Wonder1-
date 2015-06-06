@@ -29,8 +29,8 @@ public class SimpleHueController implements SimpleHueApi {
     private static final int HUE_MAX_BRIGHTNESS = 254;
     private static final int HUE_MIN_BRIGHTNESS = 0;
 
-    private static final int MY_MAX_BRIGHTNESS = 100;
-    private static final int MY_MIN_BRIGHTNESS = 0;
+    public static final int MY_MAX_BRIGHTNESS = 100;
+    public static final int MY_MIN_BRIGHTNESS = 0;
 
     public SimpleHueController() {
         phHueSDK = PHHueSDK.create();
