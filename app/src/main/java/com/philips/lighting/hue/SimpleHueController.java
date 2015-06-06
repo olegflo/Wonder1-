@@ -13,8 +13,6 @@ import com.philips.lighting.model.PHLightState;
 import java.util.List;
 import java.util.Map;
 
-import timber.log.Timber;
-
 /**
  * @author Oleg Soroka
  * @date 6/6/15
@@ -31,6 +29,8 @@ public class SimpleHueController implements SimpleHueApi {
 
     public static final int MY_MAX_BRIGHTNESS = 100;
     public static final int MY_MIN_BRIGHTNESS = 0;
+
+    public static final int MAX_LUMINOSITY = 4096;
 
     public SimpleHueController() {
         phHueSDK = PHHueSDK.create();
@@ -63,32 +63,32 @@ public class SimpleHueController implements SimpleHueApi {
 
         @Override
         public void onSuccess() {
-            Timber.d("onSuccess");
+            Log.d(LOG_TAG, "onSuccess");
         }
 
         @Override
         public void onStateUpdate(Map<String, String> arg0, List<PHHueError> arg1) {
-            Timber.d("Light has updated");
+            Log.d(LOG_TAG, "Light has updated");
         }
 
         @Override
         public void onError(int arg0, String arg1) {
-            Timber.e("onError");
+            Log.d(LOG_TAG, "onError");
         }
 
         @Override
         public void onReceivingLightDetails(PHLight arg0) {
-            Timber.d("onReceivingLightDetails: " + arg0);
+            Log.d(LOG_TAG, "onReceivingLightDetails: " + arg0);
         }
 
         @Override
         public void onReceivingLights(List<PHBridgeResource> arg0) {
-            Timber.d("onReceivingLights: " + arg0);
+            Log.d(LOG_TAG, "onReceivingLights: " + arg0);
         }
 
         @Override
         public void onSearchComplete() {
-            Timber.d("onSearchComplete");
+            Log.d(LOG_TAG, "onSearchComplete");
         }
 
     };

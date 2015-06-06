@@ -36,6 +36,7 @@ public class ThermometerDemoActivity extends Activity {
     private TextView mWelcomeTextView;
     private TextView mTemperatureValueTextView;
     private TextView mTemperatureNameTextView;
+    private TextView tvPercentage;
     private TransmitterDevice mDevice;
     private Subscription mUserInfoSubscription = Subscriptions.empty();
     private Subscription mTemperatureDeviceSubscription = Subscriptions.empty();
@@ -44,12 +45,12 @@ public class ThermometerDemoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         View view = View.inflate(this, R.layout.activity_thermometer_demo, null);
 
         mWelcomeTextView = (TextView) view.findViewById(R.id.txt_welcome);
         mTemperatureValueTextView = (TextView) view.findViewById(R.id.txt_temperature_value);
         mTemperatureNameTextView = (TextView) view.findViewById(R.id.txt_temperature_name);
+        tvPercentage = (TextView) view.findViewById(R.id.tv_percentage);
 
         setContentView(view);
 
@@ -250,17 +251,17 @@ public class ThermometerDemoActivity extends Activity {
                         if (reading.meaning.equals("luminosity")) {
                             mTemperatureValueTextView.setText(reading.value.toString());
                             double readingValue = (Double) reading.value;
-                            int luminosity = processLuminosity(readingValue);
-                            simpleHueController.manageBrightness(luminosity);
+                            int percentage = processLuminosityPercentage(readingValue);
+                            tvPercentage.setText(String.valueOf(percentage));
+                            simpleHueController.manageBrightness(percentage);
                         }
                     }
                 });
     }
 
-    int processLuminosity(double readingValue) {
+    int processLuminosityPercentage(double readingValue) {
         System.out.println("Luminosity value=" + readingValue);
-        int x = 4096;
-        int percent = (int) (readingValue / x * 100);
+        int percent = (int) (readingValue / SimpleHueController.MAX_LUMINOSITY * 100);
         System.out.println("Luminosity percentage=" + percent);
         return percent;
     }
