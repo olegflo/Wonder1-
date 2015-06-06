@@ -271,7 +271,7 @@ public class ThermometerDemoActivity extends Activity {
                             int green = color.get("green").intValue();
 
                             int hue = getHue(red, green, blue);
-                            simpleHueController.manageHue(hue);
+                            // simpleHueController.manageHue(hue);
                         }
                     }
                 });
@@ -319,6 +319,7 @@ public class ThermometerDemoActivity extends Activity {
         // TODO: do stuff
         System.out.println("Threshold crossed");
         simpleHueController.manageHue(new Random().nextInt(SimpleHueController.MY_MAX_HUE));
+        soundManager.playNormalSound();
     }
 
     int processLuminosityPercentage(double readingValue) {

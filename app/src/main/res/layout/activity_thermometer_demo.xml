@@ -11,57 +11,61 @@
         android:id="@+id/txt_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:text="@string/hello_relayr"
         android:textSize="22sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingTop="25dp"
+        android:paddingBottom="10dp"
         android:text="luminosity"
+        android:textColor="@android:color/holo_green_dark"
         android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/txt_temperature_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingTop="25dp"
-        android:textSize="80sp"/>
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textSize="40sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingTop="25dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:text="noise"
+        android:textColor="@android:color/holo_green_dark"
         android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/txt_noise_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingTop="25dp"
-        android:textSize="60sp"/>
-
-    <TextView
-        android:id="@+id/tv_percentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingTop="25dp"
-        android:textSize="60sp"/>
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textSize="40sp"/>
 
     <TextView
         android:id="@+id/txt_temperature_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingBottom="25dp"
+        android:paddingBottom="10dp"
         android:text="@string/title_temperature"
-        android:textSize="30sp"/>
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/tv_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textSize="40sp"/>
+
 
     <ToggleButton
         android:id="@+id/switchOn"
@@ -69,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonRand"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="@string/btn_random"/>

@@ -59,6 +59,22 @@ public class SoundManager {
         }).start();
     }
 
+    public void playNormalSound() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                toneGenerator.stopTone();
+            }
+        }).start();
+    }
+
     public void playStartup() {
         new Thread(new Runnable() {
             @Override
