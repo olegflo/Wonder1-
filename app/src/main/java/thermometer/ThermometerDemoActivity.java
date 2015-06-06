@@ -38,7 +38,7 @@ public class ThermometerDemoActivity extends Activity {
 
     private static final int UPPER_THRESHOLD = 75;
     private static final int LOWER_THRESHOLD = 10;
-    private static final double SOUND_THRESHOLD = 100;
+    private static final double SOUND_THRESHOLD = 120;
     private TextView mWelcomeTextView;
     private TextView mTemperatureValueTextView;
     private TextView mTemperatureNameTextView;
@@ -304,9 +304,8 @@ public class ThermometerDemoActivity extends Activity {
                             if (readingValue > SOUND_THRESHOLD && !mAboveSoundThreshold) {
                                 mAboveSoundThreshold = true;
                                 onSoundThresholdCrossed();
-                            } else if (readingValue <= SOUND_THRESHOLD && mAboveSoundThreshold) {
+                            } else if (readingValue <= SOUND_THRESHOLD) {
                                 mAboveSoundThreshold = false;
-                                onSoundThresholdCrossed();
                             }
                         }
                     }
