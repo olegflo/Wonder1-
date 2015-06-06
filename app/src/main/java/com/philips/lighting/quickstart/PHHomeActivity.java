@@ -54,6 +54,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bridgelistlinear);
 
+
         // init wunderbar stuff
         new RelayrSdk.Builder(this).inMockMode(false).build();
 
