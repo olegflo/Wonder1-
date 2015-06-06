@@ -1,8 +1,6 @@
 package thermometer;
 
 import android.app.Activity;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +13,7 @@ import android.widget.ToggleButton;
 import com.google.gson.internal.LinkedTreeMap;
 import com.philips.lighting.hue.SimpleHueController;
 import com.philips.lighting.quickstart.R;
+import com.philips.lighting.quickstart.SoundManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +35,6 @@ import rx.subscriptions.Subscriptions;
 
 public class ThermometerDemoActivity extends Activity {
 
-    private static final int UPPER_THRESHOLD = 75;
-    private static final int LOWER_THRESHOLD = 10;
     private TextView mWelcomeTextView;
     private TextView mTemperatureValueTextView;
     private TextView mTemperatureNameTextView;
@@ -46,6 +43,8 @@ public class ThermometerDemoActivity extends Activity {
     private Subscription mUserInfoSubscription = Subscriptions.empty();
     private Subscription mTemperatureDeviceSubscription = Subscriptions.empty();
     private SimpleHueController simpleHueController;
+
+    private SoundManager soundManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +75,8 @@ public class ThermometerDemoActivity extends Activity {
                                 .manageBrightness(!isChecked ? SimpleHueController.MY_MAX_BRIGHTNESS : SimpleHueController.MY_MIN_BRIGHTNESS);
                     }
                 });
+
+        soundManager = new SoundManager();
     }
 
     @Override
@@ -246,20 +247,14 @@ public class ThermometerDemoActivity extends Activity {
                     public void onNext(Reading reading) {
                         System.out.println("!! onNext");
                         if (reading.meaning.equals("luminosity")) {
-                            mTemperatureValueTextView.setText(reading.value.toString());
                             double readingValue = (Double) reading.value;
-
                             int percentage = processLuminosityPercentage(readingValue);
+
                             tvPercentage.setText(percentage + "%");
-                            simpleHueController.manageBrightness(percentage);
+                            mTemperatureValueTextView.setText(reading.value.toString());
 
-                            if (percentage > UPPER_THRESHOLD) {
-                                playShutdown();
-                            } else if (percentage <= LOWER_THRESHOLD) {
-                                playStartup();
-                            }
                             simpleHueController.manageBrightness(percentage);
-
+                            soundManager.playSound(percentage);
                         } else if (reading.meaning.equals("color")) {
                             LinkedTreeMap<String, Double> color = (LinkedTreeMap<String, Double>) reading.value;
 
@@ -291,37 +286,6 @@ public class ThermometerDemoActivity extends Activity {
         Toast.makeText(ThermometerDemoActivity.this, stringId, Toast.LENGTH_SHORT).show();
     }
 
-    private void playShutdown() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                toneGenerator.stopTone();
-            }
-        }).start();
-    }
-
-    public void playStartup() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_NETWORK_LITE);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                toneGenerator.stopTone();
-            }
-        }).start();
-    }
 
     public int getHue(int red, int green, int blue) {
 
@@ -344,4 +308,5 @@ public class ThermometerDemoActivity extends Activity {
 
         return Math.round(hue);
     }
+
 }
