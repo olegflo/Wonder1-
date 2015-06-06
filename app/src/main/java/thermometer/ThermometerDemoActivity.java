@@ -1,6 +1,7 @@
 package thermometer;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,8 @@ import rx.subscriptions.Subscriptions;
 
 public class ThermometerDemoActivity extends Activity {
 
+    private static final int UPPER_THRESHOLD = 75 ;
+    private static final int LOWER_THRESHOLD = 0 ;
     private TextView mWelcomeTextView;
     private TextView mTemperatureValueTextView;
     private TextView mTemperatureNameTextView;
@@ -175,8 +178,8 @@ public class ThermometerDemoActivity extends Activity {
                         // kinds of transmitter.
                         if (transmitters.isEmpty())
                             return Observable.from(new ArrayList<List<TransmitterDevice>>());
-                        return RelayrSdk.getRelayrApi().getTransmitterDevices(transmitters.get(0)
-                                                                                      .id);
+                        return RelayrSdk.getRelayrApi()
+                                .getTransmitterDevices(transmitters.get(0).id);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -251,9 +254,17 @@ public class ThermometerDemoActivity extends Activity {
                         if (reading.meaning.equals("luminosity")) {
                             mTemperatureValueTextView.setText(reading.value.toString());
                             double readingValue = (Double) reading.value;
+<<<<<<< HEAD
                             int percentage = processLuminosityPercentage(readingValue);
                             tvPercentage.setText(String.valueOf(percentage));
                             simpleHueController.manageBrightness(percentage);
+=======
+                            int luminosity = processLuminosity(readingValue);
+                            if (luminosity > UPPER_THRESHOLD || luminosity == LOWER_THRESHOLD) {
+                                playSound();
+                            }
+                            simpleHueController.manageBrightness(luminosity);
+>>>>>>> origin/master
                         }
                     }
                 });
@@ -274,5 +285,21 @@ public class ThermometerDemoActivity extends Activity {
 
     private void showToast(int stringId) {
         Toast.makeText(ThermometerDemoActivity.this, stringId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void playSound() {
+
+        // play sound
+        MediaPlayer mp = MediaPlayer.create(ThermometerDemoActivity.this, R.raw.alarm2);
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                // TODO Auto-generated method stub
+                mp.release();
+            }
+
+        });
+        mp.start();
     }
 }
