@@ -1,7 +1,8 @@
 package thermometer;
 
 import android.app.Activity;
-import android.media.MediaPlayer;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,12 +67,14 @@ public class ThermometerDemoActivity extends Activity {
 
         simpleHueController = new SimpleHueController();
 
-        ((ToggleButton) findViewById(R.id.switchOn)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                simpleHueController.manageBrightness(!isChecked ? SimpleHueController.MY_MAX_BRIGHTNESS : SimpleHueController.MY_MIN_BRIGHTNESS);
-            }
-        });
+        ((ToggleButton) findViewById(R.id.switchOn))
+                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        simpleHueController
+                                .manageBrightness(!isChecked ? SimpleHueController.MY_MAX_BRIGHTNESS : SimpleHueController.MY_MIN_BRIGHTNESS);
+                    }
+                });
     }
 
     @Override
@@ -80,8 +83,7 @@ public class ThermometerDemoActivity extends Activity {
 
         if (RelayrSdk.isUserLoggedIn())
             getMenuInflater().inflate(R.menu.thermometer_demo_logged_in, menu);
-        else
-            getMenuInflater().inflate(R.menu.thermometer_demo_not_logged_in, menu);
+        else getMenuInflater().inflate(R.menu.thermometer_demo_not_logged_in, menu);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -102,8 +104,7 @@ public class ThermometerDemoActivity extends Activity {
     }
 
     private void logIn() {
-        RelayrSdk.logIn(this)
-                .observeOn(AndroidSchedulers.mainThread())
+        RelayrSdk.logIn(this).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<User>() {
                     @Override
                     public void onCompleted() {
@@ -145,10 +146,8 @@ public class ThermometerDemoActivity extends Activity {
     }
 
     private void loadUserInfo() {
-        mUserInfoSubscription = RelayrSdk.getRelayrApi().getUserInfo()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<User>() {
+        mUserInfoSubscription = RelayrSdk.getRelayrApi().getUserInfo().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
                     @Override
                     public void onCompleted() {
                     }
@@ -181,8 +180,7 @@ public class ThermometerDemoActivity extends Activity {
                         return RelayrSdk.getRelayrApi()
                                 .getTransmitterDevices(transmitters.get(0).id);
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+                }).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<TransmitterDevice>>() {
                     @Override
                     public void onCompleted() {
@@ -213,30 +211,25 @@ public class ThermometerDemoActivity extends Activity {
     }
 
     private void unSubscribeToUpdates() {
-        if (!mUserInfoSubscription.isUnsubscribed())
-            mUserInfoSubscription.unsubscribe();
+        if (!mUserInfoSubscription.isUnsubscribed()) mUserInfoSubscription.unsubscribe();
 
         if (!mTemperatureDeviceSubscription.isUnsubscribed())
             mTemperatureDeviceSubscription.unsubscribe();
 
-        if (mDevice != null)
-            RelayrSdk.getWebSocketClient().unSubscribe(mDevice.id);
+        if (mDevice != null) RelayrSdk.getWebSocketClient().unSubscribe(mDevice.id);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (RelayrSdk.isUserLoggedIn())
-            updateUiForALoggedInUser();
-        else
-            updateUiForANonLoggedInUser();
+        if (RelayrSdk.isUserLoggedIn()) updateUiForALoggedInUser();
+        else updateUiForANonLoggedInUser();
     }
 
     private void subscribeForTemperatureUpdates(TransmitterDevice device) {
         mDevice = device;
-        device.subscribeToCloudReadings()
-                .observeOn(AndroidSchedulers.mainThread())
+        device.subscribeToCloudReadings().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Reading>() {
                     @Override
                     public void onCompleted() {
@@ -259,8 +252,10 @@ public class ThermometerDemoActivity extends Activity {
                             tvPercentage.setText(percentage + "%");
                             simpleHueController.manageBrightness(percentage);
 
-                            if (percentage > UPPER_THRESHOLD || percentage == LOWER_THRESHOLD) {
-                                playSound();
+                            if (percentage > UPPER_THRESHOLD) {
+                                playShutdown();
+                            } else if (percentage <= LOWER_THRESHOLD) {
+                                playStartup();
                             }
                             simpleHueController.manageBrightness(percentage);
                         }
@@ -285,18 +280,35 @@ public class ThermometerDemoActivity extends Activity {
         Toast.makeText(ThermometerDemoActivity.this, stringId, Toast.LENGTH_SHORT).show();
     }
 
-    private void playSound() {
-
-        // play sound
-        MediaPlayer mp = MediaPlayer.create(ThermometerDemoActivity.this, R.raw.alarm2);
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
+    private void playShutdown() {
+        new Thread(new Runnable() {
             @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
+            public void run() {
+                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                toneGenerator.stopTone();
             }
+        }).start();
+    }
 
-        });
-        mp.start();
+    public void playStartup() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_NETWORK_LITE);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                toneGenerator.stopTone();
+            }
+        }).start();
     }
 }
