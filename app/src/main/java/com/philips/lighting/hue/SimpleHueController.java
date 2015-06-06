@@ -1,5 +1,7 @@
 package com.philips.lighting.hue;
 
+import android.util.Log;
+
 import com.philips.lighting.hue.listener.PHLightListener;
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHBridge;
