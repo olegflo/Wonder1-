@@ -14,6 +14,8 @@ public interface SimpleHueApi {
      */
     void manageBrightness(int externalBrightness);
 
+    void manageHue(int externalHue);
+
 //    void setBrightness(int val);
 
 //    void switchOn();

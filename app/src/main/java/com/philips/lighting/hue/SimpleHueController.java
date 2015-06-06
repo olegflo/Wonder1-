@@ -60,6 +60,16 @@ public class SimpleHueController implements SimpleHueApi {
         }
     }
 
+    private void processHue(int val) {
+        PHBridge bridge = phHueSDK.getSelectedBridge();
+        List<PHLight> allLights = bridge.getResourceCache().getAllLights();
+        for (PHLight light : allLights) {
+            PHLightState lightState = new PHLightState();
+            lightState.setHue(val);
+            bridge.updateLightState(light, lightState, listener);
+        }
+    }
+
     private PHLightListener listener = new PHLightListener() {
 
         @Override
@@ -108,4 +118,8 @@ public class SimpleHueController implements SimpleHueApi {
         processBrightness(lampBrightness);
     }
 
+    @Override
+    public void manageHue(int externalHue) {
+        processHue(externalHue);
+    }
 }

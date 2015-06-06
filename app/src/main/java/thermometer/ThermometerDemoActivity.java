@@ -268,6 +268,7 @@ public class ThermometerDemoActivity extends Activity {
                             int green = color.get("green").intValue();
 
                             int hue = getHue(red, green, blue);
+                            simpleHueController.manageHue(hue);
                         }
                     }
                 });
