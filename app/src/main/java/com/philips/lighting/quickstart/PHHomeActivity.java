@@ -11,10 +11,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.philips.lighting.data.AccessPointListAdapter;
 import com.philips.lighting.data.HueSharedPreferences;
+import com.philips.lighting.hue.SimpleHueController;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
@@ -147,7 +150,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
             prefs.setLastConnectedIPAddress(b.getResourceCache().getBridgeConfiguration().getIpAddress());
             prefs.setUsername(prefs.getUsername());
             PHWizardAlertDialog.getInstance().closeProgressDialog();
-            startMainActivity();
+//            startMainActivity();
         }
 
         @Override

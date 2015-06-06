@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
+import com.philips.lighting.hue.SimpleHueController;
 import com.philips.lighting.quickstart.R;
 
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ public class ThermometerDemoActivity extends Activity {
     private TransmitterDevice mDevice;
     private Subscription mUserInfoSubscription = Subscriptions.empty();
     private Subscription mTemperatureDeviceSubscription = Subscriptions.empty();
+    private SimpleHueController simpleHueController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,15 @@ public class ThermometerDemoActivity extends Activity {
             updateUiForANonLoggedInUser();
             logIn();
         }
+
+        simpleHueController = new SimpleHueController();
+
+        ((ToggleButton) findViewById(R.id.switchOn)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                simpleHueController.manageBrightness(!isChecked ? SimpleHueController.MY_MAX_BRIGHTNESS : SimpleHueController.MY_MIN_BRIGHTNESS);
+            }
+        });
     }
 
     @Override
@@ -180,7 +193,7 @@ public class ThermometerDemoActivity extends Activity {
                     @Override
                     public void onNext(List<TransmitterDevice> devices) {
                         for (TransmitterDevice device : devices) {
-                            if (device.model.equals(DeviceModel.ACCELEROMETER_GYROSCOPE.getId())) {
+                            if (device.model.equals(DeviceModel.LIGHT_PROX_COLOR.getId())) {
                                 subscribeForTemperatureUpdates(device);
                                 return;
                             }
@@ -233,11 +246,30 @@ public class ThermometerDemoActivity extends Activity {
 
                     @Override
                     public void onNext(Reading reading) {
-//                        if (reading.meaning.equals("temperature"))
-                        if (reading.meaning.equals("angularSpeed"))
-                            mTemperatureValueTextView.setText(reading.value + "˚C");
+                        if (reading.meaning.equals("luminosity")) {
+                            mTemperatureValueTextView.setText(reading.value.toString());
+
+
+                            double readingValue = (Double) reading.value;
+                            int luminosity = processLuminosity(readingValue);
+
+                            simpleHueController.manageBrightness(luminosity);
+                        }
                     }
                 });
+    }
+
+    int processLuminosity(double readingValue) {
+        System.out.println("Luminosity value=" + readingValue);
+        int percent = (int) (readingValue / 2000 * 100);
+        System.out.println("Luminosity percentage=" + percent);
+        return percent;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        simpleHueController.destroy();
     }
 
     private void showToast(int stringId) {

@@ -16,8 +16,6 @@ public class MyApplicationActivity extends Activity {
 
     public static final String LOG_TAG = MyApplicationActivity.class.getSimpleName();
 
-    private SimpleHueController simpleHueController;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,24 +29,14 @@ public class MyApplicationActivity extends Activity {
                 randomLights();
             }
         });
-        ((ToggleButton) findViewById(R.id.switchOn)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                simpleHueController.manageBrightness(!isChecked ? SimpleHueController.MY_MAX_BRIGHTNESS : SimpleHueController.MY_MIN_BRIGHTNESS);
-            }
-        });
-
-        simpleHueController = new SimpleHueController();
     }
 
     public void randomLights() {
         Random rand = new Random();
-        simpleHueController.manageBrightness(rand.nextInt(100) + 1);
     }
 
     @Override
     protected void onDestroy() {
-        simpleHueController.destroy();
         super.onDestroy();
     }
 
