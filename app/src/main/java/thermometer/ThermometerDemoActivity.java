@@ -297,7 +297,10 @@ public class ThermometerDemoActivity extends Activity {
                         if (reading.meaning.equals("noiseLevel")) {
                             mNoiseValueTextView.setText(reading.value.toString());
                             System.out
-                                    .println("Noise level = " + reading.value + ", class is " + reading.value
+                                    .println("Noise level = "
+                                                     + reading.value
+                                                     + ", class is "
+                                                     + reading.value
                                             .getClass().getSimpleName());
                             double readingValue = (Double) reading.value;
 
