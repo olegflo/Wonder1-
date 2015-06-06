@@ -77,7 +77,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
         prefs = HueSharedPreferences.getInstance(getApplicationContext());
         String lastIpAddress = prefs.getLastConnectedIPAddress();
         String lastUsername = prefs.getUsername();
-        s
+
         // Automatically try to connect to the last connected IP Address.  For multiple bridge support a different implementation is required.
         if (lastIpAddress != null && !lastIpAddress.equals("")) {
             PHAccessPoint lastAccessPoint = new PHAccessPoint();
