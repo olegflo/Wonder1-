@@ -34,8 +34,8 @@ import rx.subscriptions.Subscriptions;
 
 public class ThermometerDemoActivity extends Activity {
 
-    private static final int UPPER_THRESHOLD = 75 ;
-    private static final int LOWER_THRESHOLD = 0 ;
+    private static final int UPPER_THRESHOLD = 75;
+    private static final int LOWER_THRESHOLD = 10;
     private TextView mWelcomeTextView;
     private TextView mTemperatureValueTextView;
     private TextView mTemperatureNameTextView;
@@ -254,17 +254,15 @@ public class ThermometerDemoActivity extends Activity {
                         if (reading.meaning.equals("luminosity")) {
                             mTemperatureValueTextView.setText(reading.value.toString());
                             double readingValue = (Double) reading.value;
-<<<<<<< HEAD
+
                             int percentage = processLuminosityPercentage(readingValue);
-                            tvPercentage.setText(String.valueOf(percentage));
+                            tvPercentage.setText(percentage + "%");
                             simpleHueController.manageBrightness(percentage);
-=======
-                            int luminosity = processLuminosity(readingValue);
-                            if (luminosity > UPPER_THRESHOLD || luminosity == LOWER_THRESHOLD) {
+
+                            if (percentage > UPPER_THRESHOLD || percentage == LOWER_THRESHOLD) {
                                 playSound();
                             }
-                            simpleHueController.manageBrightness(luminosity);
->>>>>>> origin/master
+                            simpleHueController.manageBrightness(percentage);
                         }
                     }
                 });
@@ -295,7 +293,6 @@ public class ThermometerDemoActivity extends Activity {
 
             @Override
             public void onCompletion(MediaPlayer mp) {
-                // TODO Auto-generated method stub
                 mp.release();
             }
 
