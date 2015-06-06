@@ -21,6 +21,7 @@ import java.util.Map;
 public class SimpleHueController implements SimpleHueApi {
 
     public static final String LOG_TAG = SimpleHueController.class.getSimpleName();
+    public static final int MY_MAX_HUE = 65535;
 
     private PHHueSDK phHueSDK;
 

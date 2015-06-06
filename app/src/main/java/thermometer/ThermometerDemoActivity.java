@@ -17,6 +17,7 @@ import com.philips.lighting.quickstart.SoundManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.relayr.RelayrSdk;
 import io.relayr.model.DeviceModel;
@@ -35,6 +36,9 @@ import rx.subscriptions.Subscriptions;
 
 public class ThermometerDemoActivity extends Activity {
 
+    private static final int UPPER_THRESHOLD = 75;
+    private static final int LOWER_THRESHOLD = 10;
+    private static final double SOUND_THRESHOLD = 100;
     private TextView mWelcomeTextView;
     private TextView mTemperatureValueTextView;
     private TextView mTemperatureNameTextView;
@@ -43,6 +47,8 @@ public class ThermometerDemoActivity extends Activity {
     private Subscription mUserInfoSubscription = Subscriptions.empty();
     private Subscription mTemperatureDeviceSubscription = Subscriptions.empty();
     private SimpleHueController simpleHueController;
+    private TextView mNoiseValueTextView;
+    private boolean mAboveSoundThreshold = false;
 
     private SoundManager soundManager;
 
@@ -54,6 +60,7 @@ public class ThermometerDemoActivity extends Activity {
         mWelcomeTextView = (TextView) view.findViewById(R.id.txt_welcome);
         mTemperatureValueTextView = (TextView) view.findViewById(R.id.txt_temperature_value);
         mTemperatureNameTextView = (TextView) view.findViewById(R.id.txt_temperature_name);
+        mNoiseValueTextView = (TextView) view.findViewById(R.id.txt_noise_value);
         tvPercentage = (TextView) view.findViewById(R.id.tv_percentage);
 
         setContentView(view);
@@ -199,7 +206,8 @@ public class ThermometerDemoActivity extends Activity {
                         for (TransmitterDevice device : devices) {
                             if (device.model.equals(DeviceModel.LIGHT_PROX_COLOR.getId())) {
                                 subscribeForTemperatureUpdates(device);
-                                return;
+                            } else if (device.model.equals(DeviceModel.MICROPHONE.getId())) {
+                                subscribeForNoiseUpdates(device);
                             }
                         }
                     }
@@ -267,6 +275,48 @@ public class ThermometerDemoActivity extends Activity {
                         }
                     }
                 });
+    }
+
+    private void subscribeForNoiseUpdates(TransmitterDevice device) {
+        mDevice = device;
+        device.subscribeToCloudReadings().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Reading>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showToast(R.string.something_went_wrong);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Reading reading) {
+                        System.out.println("!! onNext");
+                        if (reading.meaning.equals("noiseLevel")) {
+                            mNoiseValueTextView.setText(reading.value.toString());
+                            System.out
+                                    .println("Noise level = " + reading.value + ", class is " + reading.value
+                                            .getClass().getSimpleName());
+                            double readingValue = (Double) reading.value;
+
+                            if (readingValue > SOUND_THRESHOLD && !mAboveSoundThreshold) {
+                                mAboveSoundThreshold = true;
+                                onSoundThresholdCrossed();
+                            } else if (readingValue <= SOUND_THRESHOLD && mAboveSoundThreshold) {
+                                mAboveSoundThreshold = false;
+                                onSoundThresholdCrossed();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void onSoundThresholdCrossed() {
+        // TODO: do stuff
+        System.out.println("Threshold crossed");
+        simpleHueController.manageHue(new Random().nextInt(SimpleHueController.MY_MAX_HUE));
     }
 
     int processLuminosityPercentage(double readingValue) {
