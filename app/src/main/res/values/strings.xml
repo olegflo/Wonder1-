@@ -28,4 +28,18 @@
     <string name="txt_select_smartbridge">Please select a bridge to use for this app</string>
     <string name="title_error">Error</string>
     <string name="txt_last_heartbeat">Last Heartbeat : </string>
+    <string name="title_activity_wunderbar">WunderbarActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="hello">Hello %s!</string>
+    <string name="hello_relayr">Hello Relayrer!</string>
+    <string name="action_log_in">Log in</string>
+    <string name="action_log_out">Log out</string>
+    <string name="successfully_logged_in">You were successfully logged in!</string>
+    <string name="successfully_logged_out">You were successfully logged out!</string>
+    <string name="unsuccessfully_logged_in">There was a problem in the log in.</string>
+    <string name="something_went_wrong">Oops! Something went wrong</string>
+    <string name="title_temperature">Temperature</string>
+
 </resources>

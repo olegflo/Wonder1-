@@ -25,6 +25,8 @@ import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHHueError;
 import com.philips.lighting.model.PHHueParsingError;
 
+import io.relayr.RelayrSdk;
+
 /**
  * PHHomeActivity - The starting point in your own Hue App.
  * 
@@ -51,6 +53,9 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bridgelistlinear);
+
+        // init wunderbar stuff
+        new RelayrSdk.Builder(this).inMockMode(false).build();
         
         // Gets an instance of the Hue SDK.
         phHueSDK = PHHueSDK.create();
@@ -283,5 +288,9 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
             intent.addFlags(0x8000); // equal to Intent.FLAG_ACTIVITY_CLEAR_TASK which is only available from API level 11
         startActivity(intent);
     }
-    
+
+    public void onClickWunderbar(View view) {
+        Intent intent = new Intent(getApplicationContext(), WunderbarActivity.class);
+        startActivity(intent);
+    }
 }

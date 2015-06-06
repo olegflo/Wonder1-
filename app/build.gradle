@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.philips.lighting.quickstart"
-        minSdkVersion 8
-        targetSdkVersion 17
+        minSdkVersion 15
+        targetSdkVersion 21
     }
 
     buildTypes {
@@ -21,4 +21,5 @@ android {
 dependencies {
     compile files('libs/huelocalsdk.jar')
     compile files('libs/huesdkresources.jar')
+    compile 'io.relayr:android-sdk:0.0.12'
 }
