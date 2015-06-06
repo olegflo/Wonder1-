@@ -55,6 +55,7 @@ public class SimpleHueController implements SimpleHueApi {
             PHLightState lightState = new PHLightState();
             lightState.setBrightness(val);
             lightState.setOn(val != HUE_MIN_BRIGHTNESS);
+            lightState.setHue(55000);
             bridge.updateLightState(light, lightState, listener);
         }
     }
