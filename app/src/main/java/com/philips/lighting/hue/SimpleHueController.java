@@ -24,8 +24,11 @@ public class SimpleHueController implements SimpleHueApi {
 
     private PHHueSDK phHueSDK;
 
-    private static final int MAX_BRIGHTNESS = 254;
-    private static final int MIN_BRIGHTNESS = 0;
+    private static final int HUE_MAX_BRIGHTNESS = 254;
+    private static final int HUE_MIN_BRIGHTNESS = 0;
+
+    private static final int MY_MAX_BRIGHTNESS = 100;
+    private static final int MY_MIN_BRIGHTNESS = 0;
 
     public SimpleHueController() {
         phHueSDK = PHHueSDK.create();
@@ -49,6 +52,7 @@ public class SimpleHueController implements SimpleHueApi {
         for (PHLight light : allLights) {
             PHLightState lightState = new PHLightState();
             lightState.setBrightness(val);
+            lightState.setOn(val != HUE_MIN_BRIGHTNESS);
             bridge.updateLightState(light, lightState, listener);
         }
     }
@@ -85,7 +89,12 @@ public class SimpleHueController implements SimpleHueApi {
     @Override
     public void manageBrightness(int externalBrightness) {
         Log.d(LOG_TAG, "manageBrightness");
-        int lampBrightness = MAX_BRIGHTNESS * (100 - externalBrightness) / 100;
+        if (externalBrightness > MY_MAX_BRIGHTNESS) {
+            externalBrightness = MY_MAX_BRIGHTNESS;
+        } else if (externalBrightness < MY_MIN_BRIGHTNESS) {
+            externalBrightness = MY_MIN_BRIGHTNESS;
+        }
+        int lampBrightness = HUE_MAX_BRIGHTNESS * (MY_MAX_BRIGHTNESS - externalBrightness) / MY_MAX_BRIGHTNESS;
         Log.d(LOG_TAG, "in " + externalBrightness);
         Log.d(LOG_TAG, "out " + lampBrightness);
         processBrightness(lampBrightness);
